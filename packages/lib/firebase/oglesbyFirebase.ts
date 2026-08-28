@@ -1,7 +1,15 @@
-import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, connectAuthEmulator } from "firebase/auth";
-import { getFirestore, collection, doc, connectFirestoreEmulator } from "firebase/firestore";
-import { getStorage, ref, connectStorageEmulator } from "firebase/storage";
+import process from "node:process";
+import { getApp, getApps, initializeApp } from "firebase/app";
+import { connectAuthEmulator, getAuth } from "firebase/auth";
+import {
+  collection,
+  connectFirestoreEmulator,
+  doc,
+  getFirestore,
+  serverTimestamp,
+  setDoc,
+} from "firebase/firestore";
+import { connectStorageEmulator, getStorage, ref } from "firebase/storage";
 
 // Oglesby Healthcare Strict Namespace Identifier
 export const OGLESBY_NAMESPACE = "oglesby_healthcare";
@@ -71,4 +79,26 @@ export function getOglesbyStorageRef(
 ) {
   const path = getOglesbyStoragePath(category, id, fileName);
   return ref(oglesbyStorage, path);
+}
+
+/**
+ * Sync Oglesby User Profile in Namespaced Firestore
+ */
+export async function syncOglesbyUserProfile(data: {
+  uid: string;
+  email: string;
+  name?: string;
+  role?: string;
+}) {
+  const userDoc = getOglesbyDoc("users", data.uid);
+  await setDoc(
+    userDoc,
+    {
+      email: data.email,
+      ...(data.name ? { name: data.name } : {}),
+      role: data.role || "CLIENT",
+      updatedAt: serverTimestamp(),
+    },
+    { merge: true }
+  );
 }
