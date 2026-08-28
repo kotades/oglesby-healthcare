@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Upload, FileText, CheckCircle, ShieldAlert, X } from "lucide-react";
 import { getOglesbyStoragePath, oglesbyStorage } from "@calcom/lib/firebase/oglesbyFirebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { CheckCircle, FileText, ShieldAlert, Upload, X } from "lucide-react";
+import { useState } from "react";
 
 interface DocumentUploaderProps {
   category?: "users" | "consultations" | "intake_forms" | "documents";
@@ -96,8 +96,7 @@ export function DocumentUploader({
               setUploadedUrl(null);
               setSelectedFile(null);
             }}
-            className="text-xs font-semibold text-cyan-700 hover:underline pt-1"
-          >
+            className="text-xs font-semibold text-cyan-700 hover:underline pt-1">
             Upload Another Document
           </button>
         </div>
@@ -139,15 +138,13 @@ export function DocumentUploader({
               <button
                 type="button"
                 onClick={handleUpload}
-                className="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs text-white bg-cyan-700 hover:bg-cyan-800 shadow-sm transition-colors"
-              >
+                className="flex-1 py-2.5 px-4 rounded-xl font-bold text-xs text-white bg-cyan-700 hover:bg-cyan-800 shadow-sm transition-colors">
                 Upload File Securely
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedFile(null)}
-                className="p-2.5 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50"
-              >
+                className="p-2.5 rounded-xl border border-slate-200 text-slate-500 hover:bg-slate-50">
                 <X className="w-4 h-4" />
               </button>
             </div>

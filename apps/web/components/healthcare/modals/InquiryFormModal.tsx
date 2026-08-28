@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { X, Send, ShieldCheck, Mail } from "lucide-react";
 import { COMPANY_PHONE } from "@calcom/lib/constants";
+import { Mail, Send, ShieldCheck, X } from "lucide-react";
+import { useState } from "react";
 
 interface InquiryFormModalProps {
   isOpen: boolean;
@@ -18,8 +18,7 @@ export function InquiryFormModal({ isOpen, onClose }: InquiryFormModalProps) {
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
-          aria-label="Close modal"
-        >
+          aria-label="Close modal">
           <X className="w-5 h-5" />
         </button>
 
@@ -33,7 +32,12 @@ export function InquiryFormModal({ isOpen, onClose }: InquiryFormModalProps) {
           </div>
         </div>
 
-        <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); onClose(); }}>
+        <form
+          className="space-y-4"
+          onSubmit={(e) => {
+            e.preventDefault();
+            onClose();
+          }}>
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">Your Full Name</label>
             <input
@@ -65,7 +69,9 @@ export function InquiryFormModal({ isOpen, onClose }: InquiryFormModalProps) {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Practice / Facility Details</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Practice / Facility Details
+            </label>
             <textarea
               rows={3}
               placeholder="Describe your medical practice size, current compliance needs, or workflow objectives..."
@@ -75,8 +81,7 @@ export function InquiryFormModal({ isOpen, onClose }: InquiryFormModalProps) {
 
           <button
             type="submit"
-            className="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-md transition-all duration-200"
-          >
+            className="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-md transition-all duration-200">
             Submit Proposal Request
           </button>
         </form>

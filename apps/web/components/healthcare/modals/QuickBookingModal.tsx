@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { X, Calendar, Clock, Video, CheckCircle2, ShieldCheck } from "lucide-react";
 import { COMPANY_PHONE } from "@calcom/lib/constants";
+import { Calendar, CheckCircle2, Clock, ShieldCheck, Video, X } from "lucide-react";
+import { useState } from "react";
 
 interface QuickBookingModalProps {
   isOpen: boolean;
@@ -19,8 +19,7 @@ export function QuickBookingModal({ isOpen, onClose }: QuickBookingModalProps) {
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500"
-          aria-label="Close modal"
-        >
+          aria-label="Close modal">
           <X className="w-5 h-5" />
         </button>
 
@@ -72,8 +71,7 @@ export function QuickBookingModal({ isOpen, onClose }: QuickBookingModalProps) {
 
           <button
             onClick={onClose}
-            className="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-md transition-all duration-200"
-          >
+            className="w-full py-3.5 px-6 rounded-xl font-bold text-white bg-gradient-to-r from-cyan-600 to-emerald-600 hover:from-cyan-700 hover:to-emerald-700 shadow-md transition-all duration-200">
             Confirm Reservation
           </button>
         </div>

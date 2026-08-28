@@ -1,7 +1,7 @@
 "use client";
 
+import { AlertTriangle, Calendar, RefreshCw, Trash2, X } from "lucide-react";
 import { useState } from "react";
-import { X, Calendar, AlertTriangle, RefreshCw, Trash2 } from "lucide-react";
 
 interface RescheduleCancelModalProps {
   isOpen: boolean;
@@ -9,7 +9,11 @@ interface RescheduleCancelModalProps {
   bookingTitle?: string;
 }
 
-export function RescheduleCancelModal({ isOpen, onClose, bookingTitle = "Consultation" }: RescheduleCancelModalProps) {
+export function RescheduleCancelModal({
+  isOpen,
+  onClose,
+  bookingTitle = "Consultation",
+}: RescheduleCancelModalProps) {
   const [action, setAction] = useState<"reschedule" | "cancel">("reschedule");
   const [reason, setReason] = useState("");
 
@@ -21,8 +25,7 @@ export function RescheduleCancelModal({ isOpen, onClose, bookingTitle = "Consult
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors"
-          aria-label="Close modal"
-        >
+          aria-label="Close modal">
           <X className="w-5 h-5" />
         </button>
 
@@ -45,8 +48,7 @@ export function RescheduleCancelModal({ isOpen, onClose, bookingTitle = "Consult
               action === "reschedule"
                 ? "bg-cyan-50 border-cyan-500 text-cyan-800 ring-2 ring-cyan-500/20"
                 : "bg-slate-50 border-slate-200 text-slate-600"
-            }`}
-          >
+            }`}>
             <Calendar className="w-4 h-4" />
             <span>Reschedule Time</span>
           </button>
@@ -57,8 +59,7 @@ export function RescheduleCancelModal({ isOpen, onClose, bookingTitle = "Consult
               action === "cancel"
                 ? "bg-red-50 border-red-500 text-red-800 ring-2 ring-red-500/20"
                 : "bg-slate-50 border-slate-200 text-slate-600"
-            }`}
-          >
+            }`}>
             <Trash2 className="w-4 h-4" />
             <span>Cancel Consultation</span>
           </button>
@@ -79,8 +80,7 @@ export function RescheduleCancelModal({ isOpen, onClose, bookingTitle = "Consult
           onClick={onClose}
           className={`w-full py-3.5 px-6 rounded-xl font-bold text-white shadow-md transition-all duration-200 ${
             action === "cancel" ? "bg-red-600 hover:bg-red-700" : "bg-cyan-600 hover:bg-cyan-700"
-          }`}
-        >
+          }`}>
           {action === "cancel" ? "Confirm Cancellation" : "Select New Time Slot"}
         </button>
       </div>

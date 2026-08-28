@@ -1,6 +1,6 @@
 "use client";
 
-import { X, Video, Calendar, Clock, User, ShieldCheck, FileText, CheckCircle } from "lucide-react";
+import { Calendar, CheckCircle, Clock, FileText, ShieldCheck, User, Video, X } from "lucide-react";
 
 interface ConsultationDetailModalProps {
   isOpen: boolean;
@@ -26,8 +26,7 @@ export function ConsultationDetailModal({ isOpen, onClose, booking }: Consultati
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-500"
-          aria-label="Close modal"
-        >
+          aria-label="Close modal">
           <X className="w-5 h-5" />
         </button>
 
@@ -70,16 +69,14 @@ export function ConsultationDetailModal({ isOpen, onClose, booking }: Consultati
               href={booking.videoUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 inline-flex justify-center items-center space-x-2 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl shadow transition-all duration-200"
-            >
+              className="flex-1 inline-flex justify-center items-center space-x-2 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 py-3 rounded-xl shadow transition-all duration-200">
               <Video className="w-4 h-4" />
               <span>Launch Video Call Room</span>
             </a>
           ) : (
             <button
               onClick={onClose}
-              className="flex-1 py-3 text-sm font-bold text-white bg-cyan-600 rounded-xl hover:bg-cyan-700"
-            >
+              className="flex-1 py-3 text-sm font-bold text-white bg-cyan-600 rounded-xl hover:bg-cyan-700">
               Close Record
             </button>
           )}
