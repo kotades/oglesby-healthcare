@@ -1,5 +1,4 @@
 import type { AppFlags } from "@calcom/features/flags/config";
-import { trpc } from "@calcom/trpc/react";
 
 const initialData: AppFlags = {
   "calendar-cache": false,
@@ -27,9 +26,5 @@ const initialData: AppFlags = {
 };
 
 export function useFlags(): Partial<AppFlags> {
-  const query = trpc.viewer.features.map.useQuery(undefined, {
-    retry: false,
-    refetchOnWindowFocus: false,
-  });
-  return query.data ?? initialData;
+  return initialData;
 }
