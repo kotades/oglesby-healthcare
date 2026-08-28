@@ -83,20 +83,20 @@ export function EmbeddedBooker() {
   return (
     <section
       id="booker"
-      className="w-full bg-slate-50 py-20 border-b border-slate-200 relative overflow-hidden">
-      <div className="max-w-[1400px] mx-auto px-6">
+      className="w-full bg-slate-50 py-12 sm:py-20 border-b border-slate-200 relative overflow-hidden">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
+        <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-12 space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-50 border border-cyan-100">
             <Activity className="size-3.5 text-cyan-600 animate-pulse" />
             <span className="text-[10px] font-bold uppercase tracking-widest text-cyan-700">
               Live Scheduling Engine
             </span>
           </div>
-          <h2 className="text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
             Schedule Your Practice Strategy Audit
           </h2>
-          <p className="text-slate-500 font-light text-sm">
+          <p className="text-slate-500 font-light text-xs sm:text-sm">
             Select a session format and time slot below to connect with a senior Oglesby Healthcare
             consultant.
           </p>
@@ -105,38 +105,38 @@ export function EmbeddedBooker() {
         {/* Booker Container */}
         <div className="max-w-4xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden">
           {/* Progress Tracker */}
-          <div className="bg-slate-900 text-white px-8 py-4 flex items-center justify-between border-b border-slate-800 text-xs">
-            <div className="flex items-center gap-6 font-semibold tracking-wider uppercase text-[10px]">
+          <div className="bg-slate-900 text-white px-4 sm:px-8 py-4 flex items-center justify-between border-b border-slate-800 text-xs overflow-x-auto">
+            <div className="flex items-center gap-3 sm:gap-6 font-semibold tracking-wider uppercase text-[10px] whitespace-nowrap">
               <span
-                className={`flex items-center gap-2 ${step >= 1 ? "text-cyan-400 font-bold" : "text-slate-400"}`}>
+                className={`flex items-center gap-1.5 sm:gap-2 ${step >= 1 ? "text-cyan-400 font-bold" : "text-slate-400"}`}>
                 <span className="size-5 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[10px]">
                   1
                 </span>
                 Select Service
               </span>
               <span
-                className={`flex items-center gap-2 ${step >= 2 ? "text-cyan-400 font-bold" : "text-slate-400"}`}>
+                className={`flex items-center gap-1.5 sm:gap-2 ${step >= 2 ? "text-cyan-400 font-bold" : "text-slate-400"}`}>
                 <span className="size-5 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[10px]">
                   2
                 </span>
                 Date & Time
               </span>
               <span
-                className={`flex items-center gap-2 ${step >= 3 ? "text-cyan-400 font-bold" : "text-slate-400"}`}>
+                className={`flex items-center gap-1.5 sm:gap-2 ${step >= 3 ? "text-cyan-400 font-bold" : "text-slate-400"}`}>
                 <span className="size-5 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[10px]">
                   3
                 </span>
                 Details
               </span>
             </div>
-            <div className="hidden sm:flex items-center gap-1.5 text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
+            <div className="hidden sm:flex items-center gap-1.5 text-emerald-400 text-[10px] font-bold uppercase tracking-wider shrink-0">
               <ShieldCheck className="size-3.5" />
               HIPAA Encrypted
             </div>
           </div>
 
           {/* Body Content */}
-          <div className="p-8 lg:p-12">
+          <div className="p-4 sm:p-8 lg:p-12">
             {/* Step 1: Select Service */}
             {step === 1 && (
               <div className="space-y-6 animate-in fade-in duration-300">

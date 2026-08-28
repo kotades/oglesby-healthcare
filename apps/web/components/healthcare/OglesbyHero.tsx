@@ -19,7 +19,7 @@ export function OglesbyHero() {
 
       <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row min-h-[600px]">
         {/* Left Column: Content */}
-        <div className="flex-1 flex flex-col justify-center p-8 lg:p-16 xl:p-24 relative z-10 border-r border-slate-200">
+        <div className="flex-1 flex flex-col justify-center p-5 sm:p-8 lg:p-16 xl:p-24 relative z-10 border-r border-slate-200">
           <div className="inline-flex items-center gap-2 mb-8">
             <div className="w-2 h-2 rounded-full bg-cyan-600 animate-pulse" />
             <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-slate-500">
@@ -27,7 +27,7 @@ export function OglesbyHero() {
             </span>
           </div>
 
-          <h1 className="text-4xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1] mb-6">
             Elevating Clinical
             <br />
             <span className="text-cyan-700">Operations.</span>
@@ -83,7 +83,7 @@ export function OglesbyHero() {
         </div>
 
         {/* Right Column: Visual / Portal Access */}
-        <div className="flex-1 flex flex-col justify-center items-center bg-white p-8 lg:p-16 relative">
+        <div className="flex-1 flex flex-col justify-center items-center bg-white p-4 sm:p-8 lg:p-16 relative">
           {/* Glass Panel imitating the Client Portal */}
           <div className="w-full max-w-[480px] bg-white border border-slate-200 rounded-lg p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative z-10">
             <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-100">
