@@ -10,7 +10,21 @@ type AppStoreMetaData = {
   [key in keyof RawAppStoreMetaData]: AppMeta;
 };
 
+const ESSENTIAL_HEALTHCARE_APPS = new Set([
+  "googlecalendar",
+  "office365calendar",
+  "applecalendar",
+  "dailyvideo",
+  "zoomvideo",
+  "googlevideo",
+  "stripepayment",
+  "sendgrid",
+  "cron",
+]);
+
 export const appStoreMetadata = {} as AppStoreMetaData;
 for (const [key, value] of Object.entries(rawBookerAppsMetadata)) {
-  appStoreMetadata[key as keyof typeof appStoreMetadata] = getNormalizedAppMetadata(value);
+  if (ESSENTIAL_HEALTHCARE_APPS.has(key)) {
+    appStoreMetadata[key as keyof typeof rawBookerAppsMetadata] = getNormalizedAppMetadata(value);
+  }
 }

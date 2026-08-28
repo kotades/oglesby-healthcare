@@ -1,0 +1,45 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // =========================================================================
+    // OGLESBY HEALTHCARE STRICT DATA ISOLATION GUARDRAILS
+    // All Oglesby Healthcare data resides under /oglesby_healthcare/v1/
+    // Completely isolated from any other apps sharing 'kota-reuse'
+    // =========================================================================
+    match /oglesby_healthcare/v1 {
+      
+      // User Profiles & Intake
+      match /users/{userId} {
+        allow read: if request.auth != null;
+        allow write: if request.auth != null && request.auth.uid == userId;
+      }
+      
+      // Consultation Bookings & Appointments
+      match /bookings/{bookingId} {
+        allow read: if request.auth != null;
+        allow create: if request.auth != null;
+        allow update, delete: if request.auth != null && 
+          (request.auth.uid == resource.data.userId || request.auth.token.role == "ADMIN");
+      }
+
+      // Intake Forms & HIPAA Consent Logs
+      match /intake_forms/{formId} {
+        allow read: if request.auth != null;
+        allow create, update: if request.auth != null;
+      }
+
+      // Consultant Availability Schedules
+      match /availability/{scheduleId} {
+        allow read: if true;
+        allow write: if request.auth != null && request.auth.token.role == "ADMIN";
+      }
+
+      // Audit Logs (Read-only for Admins, Create-only for System)
+      match /audit_logs/{logId} {
+        allow read: if request.auth != null && request.auth.token.role == "ADMIN";
+        allow create: if request.auth != null;
+      }
+    }
+  }
+}

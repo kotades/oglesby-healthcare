@@ -30,6 +30,7 @@ export default async function PageWrapperLayout({ children }: { children: React.
             key={script.id}
             nonce={nonce}
             id={script.id}
+            strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: script.script,
             }}

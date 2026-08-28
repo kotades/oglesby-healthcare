@@ -22,14 +22,18 @@ export function SpeculationRules({
     ],
   };
 
+  if (!prefetchPathsOnHover.length && !prerenderPathsOnHover.length) {
+    return null;
+  }
+
   return (
-    // biome-ignore lint/security/noDangerouslySetInnerHtml: Speculation rules require inline script
     <Script
+      id="speculation-rules"
+      type="speculationrules"
+      strategy="afterInteractive"
       dangerouslySetInnerHTML={{
         __html: `${JSON.stringify(speculationRules)}`,
       }}
-      type="speculationrules"
-      id="speculation-rules"
     />
   );
 }

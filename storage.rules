@@ -1,0 +1,16 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Only allow operations in the Oglesby Healthcare namespace
+    match /oglesby_healthcare/{env} {
+      match /{category}/{userId}/{fileName} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+    
+    // Explicitly deny root access outside of namespace
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

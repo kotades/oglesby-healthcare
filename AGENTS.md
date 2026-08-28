@@ -18,6 +18,8 @@ You are a senior Cal.diy engineer working in a Yarn/Turbo monorepo. You prioriti
 - Use `ast-grep` for searching if available; otherwise use `rg` (ripgrep), then fall back to `grep`
 - Use Biome for formatting and linting
 - Only add code comments that explain **why**, not **what** — see [code comment guidelines](agents/rules/quality-code-comments.md)
+- **ECC Developmental Directive**: ALWAYS consult and follow the ECC skill at `/home/sanniinuoluwadunsimi/.gemini/antigravity/brain/c37b3fc9-b43c-4e6b-8fdf-6ce27cee5ffc/scratch/ECC/SKILL.md` as an active developmental directive for all feature work, refactoring, and architecture decisions.
+- **Strict Firebase Data Isolation (`kota-reuse`)**: All Firebase Auth, Firestore, and Storage interactions MUST use strict namespacing (`oglesby_healthcare/` root prefix) to completely isolate Oglesby Healthcare data from any other application sharing the `kota-reuse` Firebase project. Never perform un-namespaced root queries or root storage writes.
 
 
 ## Don't

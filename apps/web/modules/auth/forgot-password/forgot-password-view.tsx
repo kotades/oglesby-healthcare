@@ -1,153 +1,137 @@
 "use client";
 
-// eslint-disable-next-line no-restricted-imports
 import { debounce } from "lodash";
 import Link from "next/link";
-import type { CSSProperties, SyntheticEvent } from "react";
+import type { SyntheticEvent } from "react";
 import React from "react";
-
-import { useLocale } from "@calcom/lib/hooks/useLocale";
-import { Button } from "@calcom/ui/components/button";
-import { EmailField } from "@calcom/ui/components/form";
-
-import AuthContainer from "@components/ui/AuthContainer";
+import { ShieldCheck, Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { OglesbyHeader } from "@components/healthcare/OglesbyHeader";
+import { OglesbyFooter } from "@components/healthcare/OglesbyFooter";
 
 export type PageProps = {
   csrfToken?: string;
 };
 
 export default function ForgotPassword(props: PageProps) {
-  const csrfToken = "csrfToken" in props ? (props.csrfToken as string) : undefined;
-  const { t } = useLocale();
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<{ message: string } | null>(null);
   const [success, setSuccess] = React.useState(false);
   const [email, setEmail] = React.useState("");
 
-  const handleChange = (e: SyntheticEvent) => {
-    const target = e.target as typeof e.target & { value: string };
-    setEmail(target.value);
-  };
-
-  const submitForgotPasswordRequest = async ({ email }: { email: string }) => {
-    try {
-      const res = await fetch("/api/auth/forgot-password", {
-        method: "POST",
-        body: JSON.stringify({ email }),
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const json = await res.json();
-      if (!res.ok) {
-        setError(json);
-      } else {
-        setSuccess(true);
-      }
-
-      return json;
-    } catch (reason) {
-      setError({ message: t("unexpected_error_try_again") });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const submitRef = React.useRef(submitForgotPasswordRequest);
-  submitRef.current = submitForgotPasswordRequest;
-
-  const debouncedHandleSubmitPasswordRequest = React.useRef(
-    debounce((args: { email: string }) => submitRef.current(args), 250)
-  ).current;
-
-  React.useEffect(() => {
-    return () => debouncedHandleSubmitPasswordRequest.cancel();
-  }, []);
-
-  const handleSubmit = (e: SyntheticEvent) => {
+  const handleSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
-
-    if (!email) {
-      return;
-    }
-
-    if (loading) {
-      return;
-    }
+    if (!email) return;
 
     setLoading(true);
     setError(null);
     setSuccess(false);
 
-    debouncedHandleSubmitPasswordRequest({ email });
-  };
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        headers: { "Content-Type": "application/json" },
+      });
 
-  const Success = () => {
-    return (
-      <div className="stack-y-6 text-sm leading-normal ">
-        <p className="">{t("password_reset_email", { email })}</p>
-        <p className="">{t("password_reset_leading")}</p>
-        {error && <p className="text-center text-red-600">{error.message}</p>}
-        <Button color="secondary" className="w-full justify-center" href="/auth/login">
-          {t("back_to_signin")}
-        </Button>
-      </div>
-    );
+      const json = await res.json();
+      if (!res.ok) {
+        setError({ message: json.message || "Unable to send password reset link." });
+      } else {
+        setSuccess(true);
+      }
+    } catch (reason) {
+      setError({ message: "An error occurred. Please try again." });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <AuthContainer
-      showLogo
-      heading={!success ? t("forgot_password") : t("reset_link_sent")}
-      footerText={
-        !success && (
-          <>
-            <Link href="/auth/login" className="text-emphasis font-medium">
-              {t("back_to_signin")}
-            </Link>
-          </>
-        )
-      }>
-      {success && <Success />}
-      {!success && (
-        <>
-          <div className="stack-y-6">{error && <p className="text-red-600">{error.message}</p>}</div>
-          <form
-            className="stack-y-6"
-            onSubmit={handleSubmit}
-            action="#"
-            style={
-              {
-                "--cal-brand": "#111827",
-                "--cal-brand-emphasis": "#101010",
-                "--cal-brand-text": "Black",
-                "--cal-brand-subtle": "#9CA3AF",
-              } as CSSProperties
-            }>
-            <input name="csrfToken" type="hidden" defaultValue={csrfToken} hidden />
-            <EmailField
-              onChange={handleChange}
-              id="email"
-              name="email"
-              label={t("email_address")}
-              placeholder="john.doe@example.com"
-              required
-            />
-            <div className="stack-y-2">
-              <Button
-                className="w-full justify-center"
-                type="submit"
-                color="secondary"
-                disabled={loading}
-                aria-label={t("request_password_reset")}
-                loading={loading}>
-                {t("request_password_reset")}
-              </Button>
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 font-sans">
+      {/* Global Navigation Header */}
+      <OglesbyHeader />
+
+      <main className="flex-1 relative flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        {/* Ambient Orbs */}
+        <div className="pointer-events-none absolute -top-40 -left-40 size-[500px] rounded-full bg-cyan-600/15 blur-[120px]" />
+        <div className="pointer-events-none absolute -bottom-40 -right-40 size-[500px] rounded-full bg-emerald-600/15 blur-[120px]" />
+
+        <div className="relative z-10 w-full max-w-md my-auto">
+          <div className="rounded-3xl border border-cyan-500/20 bg-slate-900/80 backdrop-blur-xl p-8 sm:p-10 shadow-[0_0_50px_rgba(8,145,178,0.12)]">
+            <div className="text-center space-y-2 mb-8">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-2">
+                <ShieldCheck className="size-3.5 text-emerald-400" />
+                Oglesby Security Center
+              </div>
+              <h1 className="text-2xl font-bold text-white tracking-tight">
+                {success ? "Reset Link Sent" : "Reset Patient / Client Password"}
+              </h1>
+              <p className="text-xs text-slate-400">
+                {success
+                  ? `Instructions have been sent to ${email}`
+                  : "Enter your registered email address to receive a secure password reset link."}
+              </p>
             </div>
-          </form>
-        </>
-      )}
-    </AuthContainer>
+
+            {success ? (
+              <div className="space-y-6 text-center">
+                <CheckCircle2 className="size-12 text-emerald-400 mx-auto" />
+                <p className="text-xs text-slate-300">
+                  Please check your inbox for instructions to reset your Oglesby Healthcare account password.
+                </p>
+                <Link
+                  href="/auth/login"
+                  className="inline-flex items-center justify-center space-x-2 w-full py-3 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-cyan-600 to-emerald-600"
+                >
+                  <ArrowLeft className="size-4" />
+                  <span>Return to Sign In</span>
+                </Link>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                {error && (
+                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs">
+                    {error.message}
+                  </div>
+                )}
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1.5 flex items-center space-x-1">
+                    <Mail className="size-3.5 text-cyan-400" />
+                    <span>Client / Patient Email *</span>
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="patient@example.com"
+                    className="w-full px-4 py-3 rounded-xl bg-slate-950/60 border border-cyan-500/30 text-slate-100 text-xs placeholder-slate-500 focus:outline-none focus:border-cyan-400"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3.5 px-6 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-cyan-600 via-teal-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 shadow-md shadow-cyan-600/20 disabled:opacity-50"
+                >
+                  {loading ? "Sending Reset Link..." : "Send Password Reset Link"}
+                </button>
+
+                <div className="text-center pt-2">
+                  <Link href="/auth/login" className="text-xs text-cyan-400 hover:underline inline-flex items-center space-x-1">
+                    <ArrowLeft className="size-3" />
+                    <span>Back to Sign In</span>
+                  </Link>
+                </div>
+              </form>
+            )}
+          </div>
+        </div>
+      </main>
+
+      {/* Global Navigation Footer */}
+      <OglesbyFooter />
+    </div>
   );
 }

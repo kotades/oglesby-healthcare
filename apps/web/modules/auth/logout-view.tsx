@@ -58,8 +58,8 @@ export function Logout(props: PageProps) {
       <Button
         data-testid="logout-btn"
         onClick={navigateToLogin}
-        className="flex w-full justify-center"
-        loading={btnLoading}>
+        loading={btnLoading}
+        className="w-full bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white font-semibold shadow-lg shadow-cyan-600/30 border-0 rounded-xl py-3 text-sm transition-all cursor-pointer">
         {t("go_back_login")}
       </Button>
     </AuthContainer>

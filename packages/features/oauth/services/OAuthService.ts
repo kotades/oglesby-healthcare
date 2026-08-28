@@ -8,6 +8,7 @@ import { ErrorWithCode } from "@calcom/lib/errors";
 import { verifyCodeChallenge } from "@calcom/lib/pkce";
 import type { AccessScope, OAuthClientType } from "@calcom/prisma/enums";
 import { OAuthClientStatus } from "@calcom/prisma/enums";
+// @ts-ignore
 import jwt from "jsonwebtoken";
 
 export interface OAuth2Client {

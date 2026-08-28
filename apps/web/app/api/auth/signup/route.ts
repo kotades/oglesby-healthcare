@@ -36,6 +36,8 @@ async function ensureSignupIsEnabled(body: Record<string, string>) {
   }
 }
 
+import { ZodError } from "zod";
+
 async function handler(req: NextRequest) {
   const remoteIp = getIP(req);
   // Use a try catch instead of returning res every time
@@ -55,13 +57,6 @@ async function handler(req: NextRequest) {
 
     await ensureSignupIsEnabled(body);
 
-    /**
-     * Im not sure its worth merging these two handlers. They are different enough to be separate.
-     * Calcom handles things like creating a stripe customer - which we don't need to do for self hosted.
-     * It also handles things like premium username.
-     * TODO: (SEAN) - Extract a lot of the logic from calcomHandler into a separate file and import it into both handlers.
-     * @zomars: We need to be able to test this with E2E. They way it's done RN it will never run on CI.
-     */
     if (IS_PREMIUM_USERNAME_ENABLED) {
       return await calcomSignupHandler(body, query);
     }
@@ -70,6 +65,12 @@ async function handler(req: NextRequest) {
   } catch (e) {
     if (e instanceof HttpError) {
       return NextResponse.json({ message: e.message }, { status: e.statusCode });
+    }
+    if (e instanceof ZodError) {
+      return NextResponse.json(
+        { message: e.errors[0]?.message || "Invalid input data" },
+        { status: 400 }
+      );
     }
     logger.error(e);
     return NextResponse.json({ message: "Internal server error" }, { status: 500 });

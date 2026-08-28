@@ -152,11 +152,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SpeculationRules
           // URLs In Navigation
           prerenderPathsOnHover={[
-            "/event-types",
-            "/availability",
-            "/bookings/upcoming",
-            "/teams",
-            "/apps",
+            "/services",
+            "/consultants",
+            "/about",
+            "/contact",
           ]}
         />
 

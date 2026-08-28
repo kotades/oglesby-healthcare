@@ -35,11 +35,13 @@ export const WEBAPP_URL_FOR_OAUTH = IS_PRODUCTION || IS_DEV ? WEBAPP_URL : "http
 /** @deprecated use `WEBAPP_URL` */
 export const BASE_URL = WEBAPP_URL;
 export const WEBSITE_URL = ensureProtocol(process.env.NEXT_PUBLIC_WEBSITE_URL) || "https://cal.com";
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "Cal.diy";
-export const SUPPORT_MAIL_ADDRESS = process.env.NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS || "help@cal.com";
-export const COMPANY_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME || "Cal.com, Inc.";
-export const SENDER_ID = process.env.NEXT_PUBLIC_SENDER_ID || "Cal";
-export const SENDER_NAME = process.env.NEXT_PUBLIC_SENDGRID_SENDER_NAME || "Cal.diy";
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || "Oglesby Healthcare Consulting";
+export const SUPPORT_MAIL_ADDRESS = process.env.NEXT_PUBLIC_SUPPORT_MAIL_ADDRESS || "contact@oglesbyhealthcare.com";
+export const COMPANY_NAME = process.env.NEXT_PUBLIC_COMPANY_NAME || "Oglesby Healthcare Consulting LLC";
+export const COMPANY_PHONE = process.env.NEXT_PUBLIC_COMPANY_PHONE || "+1 318 232 6195";
+export const COMPANY_ADDRESS = process.env.NEXT_PUBLIC_COMPANY_ADDRESS || "6128 Bradford Dr, Shreveport, Louisiana 71113";
+export const SENDER_ID = process.env.NEXT_PUBLIC_SENDER_ID || "Oglesby";
+export const SENDER_NAME = process.env.NEXT_PUBLIC_SENDGRID_SENDER_NAME || "Oglesby Healthcare";
 export const EMAIL_FROM_NAME = process.env.EMAIL_FROM_NAME || APP_NAME;
 
 // This is the URL from which all Cal Links and their assets are served.

@@ -167,7 +167,9 @@ export default async function handler(body: Record<string, string>) {
         organizationId: null,
         creationSource: CreationSource.WEBAPP,
         identityProvider: IdentityProvider.CAL,
-        locked: false
+        locked: false,
+        emailVerified: new Date(Date.now()), // Instantly verify so user bypasses the verify-email page
+        completedOnboarding: true, // Automatically bypass cal.diy onboarding screens
       })
     } catch (error) {
       // Fallback for race conditions where user was created between our check and create
@@ -184,11 +186,14 @@ export default async function handler(body: Record<string, string>) {
       await prefillAvatar({ email: userEmail });
     }
 
+    // Skip sending email verification since we immediately verify them
+    /*
     await sendEmailVerification({
       email: userEmail,
       username: correctedUsername,
       language,
     });
+    */
   }
 
   return NextResponse.json({ message: "Created user" }, { status: 201 });
