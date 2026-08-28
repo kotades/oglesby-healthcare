@@ -81,8 +81,7 @@ export default function ForgotPassword(props: PageProps) {
                 </p>
                 <Link
                   href="/auth/login"
-                  className="inline-flex items-center justify-center space-x-2 w-full py-3 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-cyan-600 to-emerald-600"
-                >
+                  className="inline-flex items-center justify-center space-x-2 w-full py-3 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-cyan-600 to-emerald-600">
                   <ArrowLeft className="size-4" />
                   <span>Return to Sign In</span>
                 </Link>
@@ -113,13 +112,14 @@ export default function ForgotPassword(props: PageProps) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 px-6 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-cyan-600 via-teal-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 shadow-md shadow-cyan-600/20 disabled:opacity-50"
-                >
+                  className="w-full py-3.5 px-6 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-cyan-600 via-teal-600 to-emerald-600 hover:from-cyan-500 hover:to-emerald-500 shadow-md shadow-cyan-600/20 disabled:opacity-50">
                   {loading ? "Sending Reset Link..." : "Send Password Reset Link"}
                 </button>
 
                 <div className="text-center pt-2">
-                  <Link href="/auth/login" className="text-xs text-cyan-400 hover:underline inline-flex items-center space-x-1">
+                  <Link
+                    href="/auth/login"
+                    className="text-xs text-cyan-400 hover:underline inline-flex items-center space-x-1">
                     <ArrowLeft className="size-3" />
                     <span>Back to Sign In</span>
                   </Link>

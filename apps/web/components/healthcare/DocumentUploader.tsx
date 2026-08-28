@@ -1,6 +1,12 @@
 "use client";
 
-import { getOglesbyStoragePath, oglesbyStorage } from "@calcom/lib/firebase/oglesbyFirebase";
+import {
+  getOglesbyCollection,
+  getOglesbyStoragePath,
+  oglesbyAuth,
+  oglesbyStorage,
+} from "@calcom/lib/firebase/oglesbyFirebase";
+import { addDoc, serverTimestamp } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { CheckCircle, FileText, ShieldAlert, Upload, X } from "lucide-react";
 import { useState } from "react";
@@ -59,6 +65,27 @@ export function DocumentUploader({
           const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
           setUploadedUrl(downloadUrl);
           setUploadProgress(null);
+
+          try {
+            const currentUser = oglesbyAuth.currentUser;
+            if (currentUser) {
+              const docsRef = getOglesbyCollection("documents");
+              await addDoc(docsRef, {
+                userId: currentUser.uid,
+                fileName: selectedFile.name,
+                fileSize: selectedFile.size,
+                fileType: selectedFile.type || "application/octet-stream",
+                downloadUrl: downloadUrl,
+                storagePath: storagePath,
+                category: category,
+                entityId: entityId,
+                createdAt: serverTimestamp(),
+              });
+            }
+          } catch (dbErr) {
+            console.error("Error saving document metadata to Firestore:", dbErr);
+          }
+
           if (onUploadSuccess) {
             onUploadSuccess(downloadUrl, storagePath);
           }

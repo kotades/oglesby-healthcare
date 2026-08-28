@@ -1,14 +1,24 @@
 "use client";
 
+import { oglesbyAuth, syncOglesbyUserProfile } from "@calcom/lib/firebase/oglesbyFirebase";
+import { OglesbyFooter } from "@calcom/web/components/healthcare/OglesbyFooter";
+import { OglesbyHeader } from "@calcom/web/components/healthcare/OglesbyHeader";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import {
+  Activity,
+  AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  Lock,
+  Mail,
+  ShieldCheck,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { ArrowLeft, Eye, EyeOff, Mail, Lock, Activity, ShieldCheck, ArrowRight } from "lucide-react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { oglesbyAuth, syncOglesbyUserProfile } from "@calcom/lib/firebase/oglesbyFirebase";
-import { OglesbyHeader } from "@calcom/web/components/healthcare/OglesbyHeader";
-import { OglesbyFooter } from "@calcom/web/components/healthcare/OglesbyFooter";
 
 type LoginValues = {
   email: string;
@@ -28,122 +38,143 @@ export default function LoginView({ safeCallbackUrl = "" }: PageProps) {
   const onSubmit = async (values: LoginValues) => {
     setErrorMessage(null);
 
+    if (!values.email) {
+      setErrorMessage("Please enter your email address.");
+      return;
+    }
+
     if (!values.password) {
       setErrorMessage("Please enter your password.");
       return;
     }
 
     try {
-      const userCredential = await signInWithEmailAndPassword(oglesbyAuth, values.email, values.password);
+      const userCredential = await signInWithEmailAndPassword(
+        oglesbyAuth,
+        values.email.trim(),
+        values.password
+      );
       syncOglesbyUserProfile({
         uid: userCredential.user.uid,
-        email: values.email,
+        email: values.email.trim(),
       }).catch(() => {});
 
       router.push(safeCallbackUrl || "/dashboard");
     } catch (err: any) {
       console.error("Login error:", err);
-      if (err.code === "auth/invalid-credential" || err.code === "auth/user-not-found" || err.code === "auth/wrong-password") {
-        setErrorMessage("Invalid email or password. Please check your credentials.");
+      if (
+        err.code === "auth/invalid-credential" ||
+        err.code === "auth/user-not-found" ||
+        err.code === "auth/wrong-password" ||
+        err.code === "auth/invalid-email"
+      ) {
+        setErrorMessage("Incorrect email or password. Please double-check and try again.");
+      } else if (err.code === "auth/too-many-requests") {
+        setErrorMessage("Too many failed attempts. Please wait a few minutes before trying again.");
       } else {
-        setErrorMessage(err.message || "Service currently unavailable. Please try again.");
+        setErrorMessage("Unable to sign in right now. Please check your internet connection.");
       }
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-slate-900 font-sans selection:bg-cyan-500 selection:text-white">
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-cyan-500 selection:text-white">
       <OglesbyHeader />
 
-      <main className="flex-1 flex w-full flex-col lg:flex-row overflow-hidden">
-        {/* Left Side: Brand Visual (From Stitch Layout) */}
-        <div className="relative hidden lg:flex w-1/2 flex-col justify-center items-center overflow-hidden bg-slate-50 border-r border-slate-200">
-          <div className="absolute top-12 left-12">
-            <h2 className="text-3xl font-bold tracking-tight text-slate-900">
-              Oglesby<br/>Client Portal
-            </h2>
+      <main className="flex-1 flex w-full flex-col lg:flex-row items-stretch">
+        {/* Left Side: Brand Visual & Context */}
+        <div className="relative hidden lg:flex w-1/2 flex-col justify-between p-12 bg-white border-r border-slate-200">
+          <div>
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded bg-slate-900 text-cyan-400">
+                <Activity className="h-5 w-5" />
+              </div>
+              <span className="text-xl font-black text-slate-900 tracking-tight">
+                Oglesby<span className="text-cyan-600">.</span>
+              </span>
+            </div>
           </div>
-          
-          {/* Light Theme Atmosphere Gradients */}
-          <div className="absolute w-[600px] h-[600px] rounded-full bg-gradient-to-tr from-cyan-400/20 to-emerald-400/20 blur-[100px] animate-pulse-slow" />
-          
-          <div className="z-10 flex flex-col items-start max-w-md">
-            <div className="w-16 h-px bg-cyan-600 mb-6" />
-            <p className="text-lg font-light text-slate-600 tracking-wide leading-relaxed">
-              Securely access your clinical records, upcoming appointments, and compliance dashboards.
+
+          <div className="max-w-md space-y-4">
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              Patient & Practice Advisory Portal
+            </h2>
+            <p className="text-sm text-slate-600 font-normal leading-relaxed">
+              Sign in to manage your appointments, review clinical audit memos, complete intake
+              questionnaires, and track your healthcare consultancy progress.
             </p>
           </div>
-          
-          <div className="absolute bottom-8 left-12">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm">
-              <ShieldCheck className="size-3.5 text-emerald-600" />
-              100% HIPAA Audit Ready
-            </span>
+
+          <div className="flex items-center gap-2 text-xs font-semibold text-emerald-800 bg-emerald-50 px-3.5 py-2 rounded-xl border border-emerald-200 self-start">
+            <ShieldCheck className="size-4 text-emerald-600" />
+            <span>100% HIPAA & HITECH Compliant Security</span>
           </div>
         </div>
 
-        {/* Right Side: Auth Form Container */}
-        <div className="flex w-full lg:w-1/2 flex-col justify-center items-center bg-white p-8 relative">
-          
-          {/* Mobile Header (Hidden on Desktop) */}
-          <div className="lg:hidden absolute top-8 text-center w-full">
-            <h2 className="text-2xl font-bold tracking-tight text-slate-900">Client Portal</h2>
-          </div>
-
-          <div className="w-full max-w-[400px] rounded-2xl p-8 sm:p-10 flex flex-col gap-8 z-10 relative bg-white border border-slate-200 shadow-sm">
-            
-            <div className="flex flex-col gap-2">
-              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Access Protocol</h1>
-              <p className="text-sm font-light text-slate-500">Sign in to continue to your dashboard.</p>
+        {/* Right Side: Auth Form */}
+        <div className="flex w-full lg:w-1/2 flex-col justify-center items-center p-6 sm:p-12">
+          <div className="w-full max-w-[420px] rounded-2xl p-8 sm:p-10 flex flex-col gap-6 bg-white border border-slate-200 shadow-sm">
+            {/* Header */}
+            <div className="space-y-1.5 text-left">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Sign In</h1>
+              <p className="text-xs text-slate-500">Enter your email address and password to continue.</p>
             </div>
 
-            <FormProvider {...methods}>
-              <form onSubmit={methods.handleSubmit(onSubmit)} className="flex flex-col gap-5">
-                {errorMessage && (
-                  <div className="p-3 rounded-md bg-rose-50 border border-rose-200 text-rose-700 text-xs">
-                    {errorMessage}
-                  </div>
-                )}
+            {/* Custom Error Message Alert */}
+            {errorMessage && (
+              <div className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs flex items-start gap-2.5 animate-in fade-in-0">
+                <AlertCircle className="size-4 text-rose-600 shrink-0 mt-0.5" />
+                <span className="font-medium leading-relaxed">{errorMessage}</span>
+              </div>
+            )}
 
-                {/* Corporate ID / Email */}
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs uppercase tracking-[0.05em] font-bold text-slate-500" htmlFor="email">
-                    Corporate ID / Email
+            <FormProvider {...methods}>
+              <form onSubmit={methods.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                {/* Email Address */}
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-xs font-bold text-slate-700" htmlFor="email">
+                    Email Address
                   </label>
-                  <input
-                    id="email"
-                    type="email"
-                    required
-                    {...methods.register("email")}
-                    placeholder="name@oglesby.health"
-                    className="rounded-md h-11 px-4 text-sm w-full bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-400"
-                  />
+                  <div className="relative">
+                    <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
+                    <input
+                      id="email"
+                      type="email"
+                      required
+                      {...methods.register("email")}
+                      placeholder="name@example.com"
+                      className="rounded-xl h-11 pl-10 pr-4 text-sm w-full bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-cyan-600 focus:bg-white focus:ring-2 focus:ring-cyan-600/20 transition-all placeholder:text-slate-400 font-medium"
+                    />
+                  </div>
                 </div>
 
-                {/* Security Key / Password */}
-                <div className="flex flex-col gap-2">
+                {/* Password */}
+                <div className="flex flex-col gap-1.5">
                   <div className="flex justify-between items-center">
-                    <label className="text-xs uppercase tracking-[0.05em] font-bold text-slate-500" htmlFor="password">
-                      Security Key
+                    <label className="text-xs font-bold text-slate-700" htmlFor="password">
+                      Password
                     </label>
-                    <Link href="/auth/forgot-password" className="text-xs font-semibold text-cyan-600 hover:text-cyan-700 transition-colors">
-                      Forgot?
+                    <Link
+                      href="/auth/forgot-password"
+                      className="text-xs font-semibold text-cyan-700 hover:text-cyan-900 hover:underline transition-colors">
+                      Forgot password?
                     </Link>
                   </div>
                   <div className="relative">
+                    <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 size-4 text-slate-400" />
                     <input
                       id="password"
                       type={showPassword ? "text" : "password"}
                       required
                       {...methods.register("password")}
-                      placeholder="••••••••"
-                      className="rounded-md h-11 px-4 pr-10 text-sm w-full bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-slate-400"
+                      placeholder="Enter your password"
+                      className="rounded-xl h-11 pl-10 pr-10 text-sm w-full bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-cyan-600 focus:bg-white focus:ring-2 focus:ring-cyan-600/20 transition-all placeholder:text-slate-400 font-medium"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 transition-colors"
-                    >
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                      aria-label={showPassword ? "Hide password" : "Show password"}>
                       {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                     </button>
                   </div>
@@ -153,33 +184,29 @@ export default function LoginView({ safeCallbackUrl = "" }: PageProps) {
                 <button
                   type="submit"
                   disabled={methods.formState.isSubmitting}
-                  className="w-full h-11 mt-2 flex justify-center items-center gap-2 rounded-md bg-white border border-cyan-600 text-cyan-700 uppercase text-sm font-bold tracking-[0.1em] transition-all hover:bg-cyan-50 focus:ring-2 focus:ring-cyan-500 disabled:opacity-50 group"
-                >
-                  {methods.formState.isSubmitting ? "Authenticating..." : "Initialize Session"}
-                  <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
+                  className="w-full h-11 mt-2 flex justify-center items-center gap-2 rounded-xl bg-slate-900 text-white text-xs font-bold uppercase tracking-wider transition-all hover:bg-slate-800 focus:ring-2 focus:ring-cyan-600 focus:outline-none disabled:opacity-50 shadow-sm cursor-pointer">
+                  {methods.formState.isSubmitting ? "Signing in..." : "Sign In"}
                 </button>
               </form>
             </FormProvider>
 
             {/* Divider */}
-            <div className="flex items-center gap-4 my-2">
+            <div className="flex items-center gap-4">
               <div className="h-px bg-slate-200 flex-1" />
-              <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">or</span>
+              <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">or</span>
               <div className="h-px bg-slate-200 flex-1" />
             </div>
 
-            {/* Alternative Action */}
-            <Link 
+            {/* Create Account Link */}
+            <Link
               href="/signup"
-              className="w-full h-11 flex justify-center items-center gap-2 rounded-md bg-slate-900 text-white uppercase text-sm font-bold tracking-[0.1em] transition-all hover:bg-slate-800 focus:ring-2 focus:ring-slate-900"
-            >
-              Request Access Portal
+              className="w-full h-11 flex justify-center items-center gap-2 rounded-xl bg-white border border-slate-300 text-slate-800 text-xs font-bold uppercase tracking-wider transition-all hover:bg-slate-50 hover:border-slate-400 shadow-xs">
+              Create an Account
             </Link>
-
           </div>
         </div>
       </main>
-      
+
       <OglesbyFooter />
     </div>
   );
