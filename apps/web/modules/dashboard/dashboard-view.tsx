@@ -1,11 +1,9 @@
 "use client";
 
 import { Calendar, FileText, Settings, User, Activity, Bell, Search, Plus, Clock, ChevronRight, LogOut, ActivitySquare, TrendingDown, TrendingUp, AlertCircle, FileCheck, CheckCircle2 } from "lucide-react";
-import { signOut as firebaseSignOut } from "firebase/auth";
-import { oglesbyAuth } from "@calcom/lib/firebase/oglesbyFirebase";
+import { signOut as firebaseSignOut, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { onAuthStateChanged } from "firebase/auth";
 import { collection, query, orderBy, getDocs } from "firebase/firestore";
 import { oglesbyAuth, oglesbyDb, getOglesbyCollectionPath } from "@calcom/lib/firebase/oglesbyFirebase";
 
