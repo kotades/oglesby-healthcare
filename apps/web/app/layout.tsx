@@ -10,6 +10,7 @@ import Script from "next/script";
 import type React from "react";
 
 import "../styles/globals.css";
+import process from "node:process";
 import { AppRouterI18nProvider } from "./AppRouterI18nProvider";
 import { Providers } from "./providers";
 import { SpeculationRules } from "./SpeculationRules";
@@ -42,35 +43,20 @@ export const viewport = {
 };
 
 export const metadata = {
+  title: {
+    default: "Oglesby Healthcare Consulting | Practice Operations & Client Portal",
+    template: "%s | Oglesby Healthcare Consulting",
+  },
+  description:
+    "Empowering medical practices and health systems to optimize clinical workflows, enforce HIPAA compliance, and maximize revenue cycle performance.",
   icons: {
-    icon: "/api/logo?type=favicon-32",
-    apple: "/api/logo?type=apple-touch-icon",
-    other: [
-      {
-        rel: "icon-mask",
-        url: "/safari-pinned-tab.svg",
-        color: "#000000",
-      },
-      {
-        url: "/api/logo?type=favicon-16",
-        sizes: "16x16",
-        type: "image/png",
-      },
-      {
-        url: "/api/logo?type=favicon-32",
-        sizes: "32x32",
-        type: "image/png",
-      },
-    ],
+    icon: "/oglesby-favicon.svg",
+    apple: "/oglesby-favicon.svg",
+    shortcut: "/oglesby-favicon.svg",
   },
   manifest: "/site.webmanifest",
   other: {
-    "application-TileColor": "#ff0000",
-  },
-  twitter: {
-    site: "@calcom",
-    creator: "@calcom",
-    card: "summary_large_image",
+    "application-TileColor": "#0891b2",
   },
   robots: {
     index: true,
@@ -116,8 +102,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <head nonce={nonce}>
         <style>{`
           :root {
-            --font-sans: ${interFont.style.fontFamily.replace(/\'/g, "")}, system-ui;
-            --font-cal: ${calFont.style.fontFamily.replace(/\'/g, "")};
+            --font-sans: ${interFont.style.fontFamily.replace(/'/g, "")}, system-ui;
+            --font-cal: ${calFont.style.fontFamily.replace(/'/g, "")};
           }
         `}</style>
         {process.env.NODE_ENV === "development" && (
@@ -151,12 +137,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <IconSprites />
         <SpeculationRules
           // URLs In Navigation
-          prerenderPathsOnHover={[
-            "/services",
-            "/consultants",
-            "/about",
-            "/contact",
-          ]}
+          prerenderPathsOnHover={["/services", "/consultants", "/about", "/contact"]}
         />
 
         <Providers isEmbed={isEmbed} nonce={nonce} country={country}>
