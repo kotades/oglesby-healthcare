@@ -8,8 +8,8 @@ import { ArrowLeft, Eye, EyeOff, Mail, Lock, Activity, ShieldCheck, ArrowRight, 
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import { oglesbyAuth, oglesbyDb, getOglesbyCollectionPath, syncOglesbyUserProfile } from "@calcom/lib/firebase/oglesbyFirebase";
-import OglesbyHeader from "@calcom/web/components/healthcare/OglesbyHeader";
-import OglesbyFooter from "@calcom/web/components/healthcare/OglesbyFooter";
+import { OglesbyHeader } from "@calcom/web/components/healthcare/OglesbyHeader";
+import { OglesbyFooter } from "@calcom/web/components/healthcare/OglesbyFooter";
 
 type SignupValues = {
   name: string;
@@ -37,11 +37,9 @@ export default function SignupView() {
       await updateProfile(userCredential.user, {
         displayName: values.name
       });
-
-      const sanitizedUid = values.email.replace(/[^a-zA-Z0-9]/g, "_");
       
       await syncOglesbyUserProfile({
-        uid: sanitizedUid,
+        uid: userCredential.user.uid,
         email: values.email,
         name: values.name,
         role: "CLIENT"

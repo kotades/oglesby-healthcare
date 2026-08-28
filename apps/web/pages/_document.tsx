@@ -74,10 +74,11 @@ class MyDocument extends Document<Props> {
           <meta name="theme-color" media="(prefers-color-scheme: light)" content="#F9FAFC" />
           <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1F1F1F" />
           {!IS_PRODUCTION && process.env.VERCEL_ENV === "preview" && (
-            // eslint-disable-next-line @next/next/no-sync-scripts
             <script
-              data-project-id="KjpMrKTnXquJVKfeqmjdTffVPf1a6Unw2LZ58iE4"
-              src="https://snippet.meticulous.ai/v1/stagingMeticulousSnippet.js"
+              id="meticulous-snippet"
+              dangerouslySetInnerHTML={{
+                __html: `(function(){ var s=document.createElement('script'); s.src="https://snippet.meticulous.ai/v1/stagingMeticulousSnippet.js"; s.setAttribute('data-project-id','KjpMrKTnXquJVKfeqmjdTffVPf1a6Unw2LZ58iE4'); document.head.appendChild(s); })();`,
+              }}
             />
           )}
         </Head>

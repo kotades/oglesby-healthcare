@@ -7,8 +7,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { ArrowLeft, Eye, EyeOff, Mail, Lock, Activity, ShieldCheck, ArrowRight } from "lucide-react";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { oglesbyAuth, syncOglesbyUserProfile } from "@calcom/lib/firebase/oglesbyFirebase";
-import OglesbyHeader from "@calcom/web/components/healthcare/OglesbyHeader";
-import OglesbyFooter from "@calcom/web/components/healthcare/OglesbyFooter";
+import { OglesbyHeader } from "@calcom/web/components/healthcare/OglesbyHeader";
+import { OglesbyFooter } from "@calcom/web/components/healthcare/OglesbyFooter";
 
 type LoginValues = {
   email: string;
@@ -34,10 +34,9 @@ export default function LoginView({ safeCallbackUrl = "" }: PageProps) {
     }
 
     try {
-      await signInWithEmailAndPassword(oglesbyAuth, values.email, values.password);
-      const sanitizedUid = values.email.replace(/[^a-zA-Z0-9]/g, "_");
+      const userCredential = await signInWithEmailAndPassword(oglesbyAuth, values.email, values.password);
       syncOglesbyUserProfile({
-        uid: sanitizedUid,
+        uid: userCredential.user.uid,
         email: values.email,
       }).catch(() => {});
 
