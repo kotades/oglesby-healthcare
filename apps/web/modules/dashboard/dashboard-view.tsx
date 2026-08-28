@@ -1,7 +1,8 @@
 "use client";
 
 import { Calendar, FileText, Settings, User, Activity, Bell, Search, Plus, Clock, ChevronRight, LogOut, ActivitySquare, TrendingDown, TrendingUp, AlertCircle, FileCheck, CheckCircle2 } from "lucide-react";
-import { signOut } from "next-auth/react";
+import { signOut as firebaseSignOut } from "firebase/auth";
+import { oglesbyAuth } from "@calcom/lib/firebase/oglesbyFirebase";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
@@ -47,7 +48,7 @@ function DashboardHeader({ user }: { user: any }) {
               <User className="size-4" />
             </div>
             <button 
-              onClick={() => signOut({ callbackUrl: '/' })}
+              onClick={() => firebaseSignOut(oglesbyAuth).then(() => window.location.href = '/')}
               className="ml-2 p-2 text-rose-500 hover:text-rose-600 hover:bg-rose-50 rounded-full transition-colors"
               title="Secure Sign Out"
             >
