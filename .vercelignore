@@ -1,0 +1,11 @@
+# Ignore node_modules and build outputs for fast Vercel CLI upload
+node_modules
+.next
+.turbo
+dist
+build
+.git
+*.log
+packages/**/node_modules
+apps/**/node_modules
+apps/**/.next
