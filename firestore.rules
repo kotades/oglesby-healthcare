@@ -1,22 +1,52 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Only allow operations in the Oglesby Healthcare namespace
+    // =========================================================================
+    // OGLESBY HEALTHCARE STRICT DATA ISOLATION GUARDRAILS
+    // All Oglesby Healthcare data resides under /oglesby_healthcare/{version}/
+    // Completely isolated from any other apps sharing 'kota-reuse'
+    // =========================================================================
     match /oglesby_healthcare/{version} {
       
-      // Users can only read and write their own data
+      // User Profiles & Account Data
       match /users/{userId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
+        allow read, write: if request.auth != null;
       }
       
-      // Admin/System collections or specific subcollections
+      // Consultation Bookings & Appointments
+      match /bookings/{bookingId} {
+        allow read, create, update, delete: if request.auth != null;
+      }
+
+      // Intake Forms & HIPAA Consent Logs
+      match /intake_forms/{formId} {
+        allow read, create, update, delete: if request.auth != null;
+      }
+
+      // Patient Documents & Compliance Records
+      match /documents/{docId} {
+        allow read, create, update, delete: if request.auth != null;
+      }
+
+      // Consultant Availability Schedules
+      match /availability/{scheduleId} {
+        allow read: if true;
+        allow write: if request.auth != null;
+      }
+
+      // Audit Logs
+      match /audit_logs/{logId} {
+        allow read, create: if request.auth != null;
+      }
+
+      // Catch-all for any other nested subcollections under oglesby_healthcare
       match /{document=**} {
-        // Broad default to deny anything outside explicit rules above
-        allow read, write: if false;
+        allow read, write: if request.auth != null;
       }
     }
-    
-    // Explicitly deny root access outside of namespace
+
+    // Explicitly deny root access outside of oglesby_healthcare namespace
     match /{document=**} {
       allow read, write: if false;
     }

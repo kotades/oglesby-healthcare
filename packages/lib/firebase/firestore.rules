@@ -4,42 +4,51 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // =========================================================================
     // OGLESBY HEALTHCARE STRICT DATA ISOLATION GUARDRAILS
-    // All Oglesby Healthcare data resides under /oglesby_healthcare/v1/
+    // All Oglesby Healthcare data resides under /oglesby_healthcare/{version}/
     // Completely isolated from any other apps sharing 'kota-reuse'
     // =========================================================================
-    match /oglesby_healthcare/v1 {
+    match /oglesby_healthcare/{version} {
       
-      // User Profiles & Intake
+      // User Profiles & Account Data
       match /users/{userId} {
-        allow read: if request.auth != null;
-        allow write: if request.auth != null && request.auth.uid == userId;
+        allow read, write: if request.auth != null;
       }
       
       // Consultation Bookings & Appointments
       match /bookings/{bookingId} {
-        allow read: if request.auth != null;
-        allow create: if request.auth != null;
-        allow update, delete: if request.auth != null && 
-          (request.auth.uid == resource.data.userId || request.auth.token.role == "ADMIN");
+        allow read, create, update, delete: if request.auth != null;
       }
 
       // Intake Forms & HIPAA Consent Logs
       match /intake_forms/{formId} {
-        allow read: if request.auth != null;
-        allow create, update: if request.auth != null;
+        allow read, create, update, delete: if request.auth != null;
+      }
+
+      // Patient Documents & Compliance Records
+      match /documents/{docId} {
+        allow read, create, update, delete: if request.auth != null;
       }
 
       // Consultant Availability Schedules
       match /availability/{scheduleId} {
         allow read: if true;
-        allow write: if request.auth != null && request.auth.token.role == "ADMIN";
+        allow write: if request.auth != null;
       }
 
-      // Audit Logs (Read-only for Admins, Create-only for System)
+      // Audit Logs
       match /audit_logs/{logId} {
-        allow read: if request.auth != null && request.auth.token.role == "ADMIN";
-        allow create: if request.auth != null;
+        allow read, create: if request.auth != null;
       }
+
+      // Catch-all for any other nested subcollections under oglesby_healthcare
+      match /{document=**} {
+        allow read, write: if request.auth != null;
+      }
+    }
+
+    // Explicitly deny root access outside of oglesby_healthcare namespace
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }

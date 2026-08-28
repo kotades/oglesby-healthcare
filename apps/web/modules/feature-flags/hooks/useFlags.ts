@@ -27,6 +27,9 @@ const initialData: AppFlags = {
 };
 
 export function useFlags(): Partial<AppFlags> {
-  const query = trpc.viewer.features.map.useQuery();
+  const query = trpc.viewer.features.map.useQuery(undefined, {
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
   return query.data ?? initialData;
 }
