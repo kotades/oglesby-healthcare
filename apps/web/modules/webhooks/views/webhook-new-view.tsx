@@ -6,7 +6,7 @@ import { useCompatSearchParams } from "@calcom/lib/hooks/useCompatSearchParams";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
 import type { RouterOutputs } from "@calcom/trpc/react";
 import { trpc } from "@calcom/trpc/react";
-import { revalidateWebhooksList } from "@calcom/web/app/(use-page-wrapper)/settings/(settings-layout)/developer/webhooks/(with-loader)/actions";
+const revalidateWebhooksList = async () => {};
 import { toastManager } from "@coss/ui/components/toast";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";

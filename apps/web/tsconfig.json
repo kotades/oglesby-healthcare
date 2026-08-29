@@ -4,6 +4,7 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["modules/*"],
+      "@calcom/web/*": ["./*"],
       "@components/*": ["components/*"],
       "@pages/*": ["pages/*"],
       "@lib/*": ["lib/*"],

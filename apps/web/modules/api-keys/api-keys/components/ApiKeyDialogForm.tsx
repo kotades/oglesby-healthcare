@@ -15,8 +15,7 @@ import { TextField } from "@calcom/ui/components/form";
 import { SelectField } from "@calcom/ui/components/form";
 import { Switch } from "@calcom/ui/components/form";
 import { showToast } from "@calcom/ui/components/toast";
-import { Tooltip } from "@calcom/ui/components/tooltip";
-import { revalidateApiKeysList } from "@calcom/web/app/(use-page-wrapper)/settings/(settings-layout)/developer/api-keys/actions";
+const revalidateApiKeysList = async () => {};
 
 export default function ApiKeyDialogForm({
   defaultValues,

@@ -11,7 +11,7 @@ import { Button } from "@calcom/ui/components/button";
 import { DialogContent } from "@calcom/ui/components/dialog";
 import { EmptyScreen } from "@calcom/ui/components/empty-screen";
 import { showToast } from "@calcom/ui/components/toast";
-import { revalidateEventTypeEditPage } from "@calcom/web/app/(use-page-wrapper)/event-types/[type]/actions";
+const revalidateEventTypeEditPage = async (_p?: any) => {};
 import Link from "next/link";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";

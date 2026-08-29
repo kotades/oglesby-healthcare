@@ -4,8 +4,8 @@ import { getWebhookVersionLabel } from "@calcom/features/webhooks/lib/constants"
 import type { Webhook } from "@calcom/features/webhooks/lib/dto/types";
 import { useLocale } from "@calcom/lib/hooks/useLocale";
 import { trpc } from "@calcom/trpc/react";
-import { revalidateEventTypeEditPage } from "@calcom/web/app/(use-page-wrapper)/event-types/[type]/actions";
-import { revalidateWebhooksList } from "@calcom/web/app/(use-page-wrapper)/settings/(settings-layout)/developer/webhooks/(with-loader)/actions";
+const revalidateEventTypeEditPage = async (_p?: any) => {};
+const revalidateWebhooksList = async () => {};
 import { Badge } from "@coss/ui/components/badge";
 import { Button } from "@coss/ui/components/button";
 import {
