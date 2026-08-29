@@ -13,15 +13,18 @@ import { getStorage, ref } from "firebase/storage";
 export const OGLESBY_NAMESPACE = "oglesby_healthcare";
 export const OGLESBY_VERSION = "v1";
 
-// Firebase Client Web Config for 'kota-reuse' project
+// Firebase Client Web Config — Oglesby Healthcare dedicated app (kota-reuse project)
+// App registered as "Oglesby Healthcare" — App ID: 1:551190616453:web:2e70102e829ae4c2658cec
+// All Firestore data is also namespaced under oglesby_healthcare/v1/ for double isolation.
 export const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "AIzaSyCAzayr2LOT64lUz1IusMsI7kMWEC8Di8M",
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || "kota-reuse.firebaseapp.com",
   projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "kota-reuse",
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET || "kota-reuse.firebasestorage.app",
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID || "551190616453",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:551190616453:web:e2f6e53b316e1afe658cec",
-  measurementId: "G-PVGN0389BD",
+  // Oglesby Healthcare dedicated app ID (separate from KP Elite Golf Academy)
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "1:551190616453:web:2e70102e829ae4c2658cec",
+  measurementId: "G-EMTGT5CGXR",
 };
 
 // Initialize Firebase App Singleton

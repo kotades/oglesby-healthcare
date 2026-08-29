@@ -2,18 +2,59 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // =========================================================================
-    // OGLESBY HEALTHCARE STRICT DATA ISOLATION GUARDRAILS
-    // All Oglesby Healthcare data resides under /oglesby_healthcare/{version}/
-    // Completely isolated from any other apps sharing 'kota-reuse'
-    // =========================================================================
-    match /oglesby_healthcare/{version} {
-      match /{document=**} {
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // OGLESBY HEALTHCARE — Strict namespace isolation
+    // All Oglesby data lives exclusively inside /oglesby_healthcare/v1/
+    // ─────────────────────────────────────────────────────────────────────────
+    match /oglesby_healthcare/v1/{collection}/{docId} {
+
+      function isAuth() {
+        return request.auth != null;
+      }
+
+      function isOwner() {
+        return request.auth.uid == docId || request.auth.uid == resource.data.uid;
+      }
+
+      // Users can read/write their own profile only
+      match /users/{userId} {
+        allow read, write: if isAuth() && request.auth.uid == userId;
+      }
+
+      // Authenticated users can create bookings; read/update/delete their own
+      match /bookings/{bookingId} {
+        allow create: if isAuth();
+        allow read, update, delete: if isAuth() && isOwner();
+      }
+
+      // Consultations — never hard-deleted
+      match /consultations/{consultationId} {
+        allow create: if isAuth();
+        allow read, update: if isAuth() && isOwner();
+        allow delete: if false;
+      }
+
+      // Intake forms
+      match /intake_forms/{formId} {
+        allow create: if isAuth();
+        allow read, update: if isAuth() && isOwner();
+      }
+
+      // System health checks — open for connection testing (test doc deleted immediately)
+      match /system_checks/{docId} {
         allow read, write: if true;
+      }
+
+      // Block everything else inside the namespace
+      match /{anything=**} {
+        allow read, write: if false;
       }
     }
 
-    // Explicitly deny root access outside of oglesby_healthcare namespace
+    // ─────────────────────────────────────────────────────────────────────────
+    // Block ALL root-level access (protects KP Elite and any other app data)
+    // ─────────────────────────────────────────────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }
