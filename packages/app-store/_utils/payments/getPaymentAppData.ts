@@ -1,12 +1,18 @@
-import type { z } from "zod";
+import { z } from "zod";
 
 import type { EventTypeMetaDataSchema } from "@calcom/prisma/zod-utils";
 
 import type { appDataSchemas } from "../../apps.schemas.generated";
-import type { appDataSchema, paymentOptionEnum } from "../../stripepayment/zod";
 import type { EventTypeAppsList } from "../../utils";
 import { eventTypeMetaDataSchemaWithTypedApps } from "../../zod-utils";
 import { getEventTypeAppData } from "../getEventTypeAppData";
+
+export const paymentOptionEnum = z.enum(["ON_BOOKING", "HOLD"]);
+export const appDataSchema = z.object({
+  price: z.number().optional(),
+  enabled: z.boolean().optional(),
+  paymentOption: paymentOptionEnum.optional(),
+});
 
 export function getPaymentAppData(
   _eventType: {
@@ -79,7 +85,7 @@ export function getPaymentAppData(
       price: 0,
       currency: "usd",
       appId: null,
-      paymentOption: "ON_BOOKING",
+      paymentOption: "ON_BOOKING" as const,
       credentialId: undefined,
       refundPolicy: undefined,
       refundDaysCount: undefined,

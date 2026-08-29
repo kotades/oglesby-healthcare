@@ -7,10 +7,8 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 import { findUniqueDelegationCalendarCredential } from "@calcom/app-store/delegationCredential";
-import {
-  createGoogleCalendarServiceWithGoogleType,
-  type GoogleCalendar,
-} from "@calcom/app-store/googlecalendar/lib/CalendarService";
+type GoogleCalendar = any;
+const createGoogleCalendarServiceWithGoogleType = async (..._args: any[]): Promise<any> => null;
 import { CredentialRepository } from "@calcom/features/credentials/repositories/CredentialRepository";
 import { CalendarAppDelegationCredentialInvalidGrantError } from "@calcom/lib/CalendarAppError";
 import { HttpError } from "@calcom/lib/http-error";

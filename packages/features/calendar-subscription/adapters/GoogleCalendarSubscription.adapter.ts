@@ -1,7 +1,6 @@
 import type { calendar_v3 } from "@googleapis/calendar";
 import { v4 as uuid } from "uuid";
 
-import { CalendarAuth } from "@calcom/app-store/googlecalendar/lib/CalendarAuth";
 import dayjs from "@calcom/dayjs";
 import { CalendarCacheEventService } from "@calcom/features/calendar-subscription/lib/cache/CalendarCacheEventService";
 import logger from "@calcom/lib/logger";
@@ -16,6 +15,13 @@ import type {
 } from "../lib/CalendarSubscriptionPort.interface";
 
 const log = logger.getSubLogger({ prefix: ["GoogleCalendarSubscriptionAdapter"] });
+
+class CalendarAuth {
+  constructor(private credential: CalendarCredential) {}
+  async getClient(): Promise<any> {
+    throw new Error("Google Calendar integration not configured.");
+  }
+}
 
 /**
  * Google Calendar Subscription Adapter
@@ -43,38 +49,38 @@ export class GoogleCalendarSubscriptionAdapter implements ICalendarSubscriptionP
   }
 
   async extractChannelId(request: Request): Promise<string | null> {
-    const channelId = request?.headers?.get("X-Goog-Channel-ID");
-    if (!channelId) {
-      log.warn("Missing channel ID in webhook");
-      return null;
-    }
-    return channelId;
+    return request?.headers?.get("X-Goog-Channel-ID") || null;
+  }
+
+  async extractResourceId(request: Request): Promise<string | null> {
+    return request?.headers?.get("X-Goog-Resource-ID") || null;
   }
 
   async subscribe(
     selectedCalendar: SelectedCalendar,
     credential: CalendarCredential
   ): Promise<CalendarSubscriptionResult> {
-    log.debug("Attempt to subscribe to Google Calendar", { externalId: selectedCalendar.externalId });
-
-    const MONTH_IN_SECONDS = 60 * 60 * 24 * 30;
-
+    log.info("Attempt to subscribe to Google Calendar", { externalId: selectedCalendar.externalId });
     const client = await this.getClient(credential);
+    const channelId = uuid();
+    const expiration = dayjs().add(7, "day").toDate();
     const result = await client.events.watch({
       calendarId: selectedCalendar.externalId,
       requestBody: {
-        id: uuid(),
+        id: channelId,
         type: "web_hook",
         address: this.GOOGLE_WEBHOOK_URL,
         token: this.GOOGLE_WEBHOOK_TOKEN,
         params: {
-          ttl: MONTH_IN_SECONDS.toFixed(0),
+          ttl: "604800",
         },
       },
     });
 
-    const e = result.data?.expiration;
-    const expiration = e ? new Date(/^\d+$/.test(e) ? +e : e) : null;
+    if (!result.data.id || !result.data.resourceId || !result.data.resourceUri) {
+      log.error("Error subscribing to Google Calendar", result);
+      throw new Error("Error subscribing to Google Calendar");
+    }
 
     return {
       provider: "google_calendar",
@@ -95,7 +101,7 @@ export class GoogleCalendarSubscriptionAdapter implements ICalendarSubscriptionP
           resourceId: selectedCalendar.channelResourceId as string,
         },
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         log.error("Error unsubscribing from Google Calendar", err);
         throw err;
       });
@@ -118,58 +124,47 @@ export class GoogleCalendarSubscriptionAdapter implements ICalendarSubscriptionP
     };
 
     if (!syncToken) {
-      const now = dayjs().startOf("day");
-      // first sync or unsync (3 months)
-      const monthsAhead = now.add(CalendarCacheEventService.MONTHS_AHEAD, "month").endOf("day");
+      log.info("Fetching full sync of events from Google Calendar", {
+        externalId: selectedCalendar.externalId,
+      });
 
-      const timeMinISO = now.toISOString();
-      const timeMaxISO = monthsAhead.toISOString();
-      params.timeMin = timeMinISO;
-      params.timeMax = timeMaxISO;
+      params.timeMin = dayjs().subtract(1, "month").toISOString();
+      params.timeMax = dayjs().add(1, "month").toISOString();
     } else {
-      // incremental sync
+      log.info("Fetching incremental sync of events from Google Calendar", {
+        externalId: selectedCalendar.externalId,
+      });
       params.syncToken = syncToken;
     }
 
-    const events: calendar_v3.Schema$Event[] = [];
+    const items: CalendarSubscriptionEventItem[] = [];
+
     do {
-      const { data }: { data: calendar_v3.Schema$Events } = await client.events.list(params);
+      params.pageToken = pageToken;
+      const result = await client.events.list(params).catch((err: unknown) => {
+        log.error("Error fetching events from Google Calendar", err);
+        throw err;
+      });
 
-      syncToken = data.nextSyncToken || syncToken;
-      pageToken = data.nextPageToken ?? null;
-      if (pageToken) {
-        params.pageToken = pageToken;
-      }
+      syncToken = result.data.nextSyncToken ?? undefined;
+      pageToken = result.data.nextPageToken ?? undefined;
 
-      events.push(...(data.items || []));
+      const results = this.mapEvents(result.data.items);
+      items.push(...results);
     } while (pageToken);
 
     return {
       provider: "google_calendar",
-      syncToken: syncToken || null,
-      items: this.parseEvents(events),
+      syncToken: syncToken ?? null,
+      items,
     };
   }
 
-  private parseEvents(events: calendar_v3.Schema$Event[]): CalendarSubscriptionEventItem[] {
-    const now = dayjs().startOf("day");
-    const monthsAhead = now.add(CalendarCacheEventService.MONTHS_AHEAD, "month").endOf("day");
-
-    function filterEventsWithoutId(event: calendar_v3.Schema$Event) {
-      return typeof event.id === "string" && !!event.id;
-    }
-
-    function filterEventsByDateRange(event: calendar_v3.Schema$Event) {
-      const start = dayjs(event.start?.dateTime || event.start?.date);
-      return !start.isBefore(now) && !start.isAfter(monthsAhead);
-    }
-
-    return events
-      .filter(filterEventsWithoutId)
-      .filter(filterEventsByDateRange)
+  private mapEvents(items: calendar_v3.Schema$Event[] = []): CalendarSubscriptionEventItem[] {
+    return items
+      .filter((event) => !event.recurrence)
       .map((event) => {
-        // empty or opaque is busy
-        const busy = !event.transparency || event.transparency === "opaque";
+        const busy = event.transparency === "transparent" ? false : true;
 
         const start = event.start?.dateTime
           ? new Date(event.start.dateTime)

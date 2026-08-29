@@ -1,4 +1,3 @@
-import { createPaymentLink } from "@calcom/app-store/stripepayment/lib/client";
 import { sendAwaitingPaymentEmailAndSMS } from "@calcom/emails/email-manager";
 import { getBooking } from "@calcom/features/bookings/lib/payment/getBooking";
 import { AttendeeRepository } from "@calcom/features/bookings/repositories/AttendeeRepository";
@@ -9,6 +8,22 @@ import prisma from "@calcom/prisma";
 import { z } from "zod";
 
 const log = logger.getSubLogger({ prefix: ["sendAwaitingPaymentEmail"] });
+
+const createPaymentLink = ({
+  paymentUid,
+  name,
+  email,
+  date,
+}: {
+  paymentUid: string;
+  name: string | null;
+  email: string | null;
+  date: string;
+}) => {
+  return `${process.env.NEXT_PUBLIC_WEBAPP_URL || ""}/payment/${paymentUid}?name=${encodeURIComponent(
+    name || ""
+  )}&email=${encodeURIComponent(email || "")}&date=${encodeURIComponent(date)}`;
+};
 
 export const sendAwaitingPaymentEmailPayloadSchema = z.object({
   bookingId: z.number(),
