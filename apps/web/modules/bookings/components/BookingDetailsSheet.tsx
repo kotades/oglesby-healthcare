@@ -762,8 +762,8 @@ function PaymentSection({
     ? parsedEventTypeMetadata.data
     : null;
 
-  const refundPolicy = eventTypeMetadata?.apps?.stripe?.refundPolicy;
-  const refundDaysCount = eventTypeMetadata?.apps?.stripe?.refundDaysCount;
+  const refundPolicy = (eventTypeMetadata?.apps as Record<string, any>)?.stripe?.refundPolicy;
+  const refundDaysCount = (eventTypeMetadata?.apps as Record<string, any>)?.stripe?.refundDaysCount;
 
   const paymentStatusMessage = usePaymentStatus({
     bookingStatus: booking.status,

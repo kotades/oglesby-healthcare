@@ -422,8 +422,8 @@ export default function Success(props: PageProps) {
           paymentOption: props.paymentStatus.paymentOption,
         }
       : { success: false, refunded: false },
-    refundPolicy: eventType?.metadata?.apps?.stripe?.refundPolicy,
-    refundDaysCount: eventType?.metadata?.apps?.stripe?.refundDaysCount,
+    refundPolicy: (eventType?.metadata?.apps as Record<string, any>)?.stripe?.refundPolicy,
+    refundDaysCount: (eventType?.metadata?.apps as Record<string, any>)?.stripe?.refundDaysCount,
   });
 
   const successPageHeadline = (() => {

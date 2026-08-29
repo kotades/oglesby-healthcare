@@ -252,7 +252,7 @@ const OnboardingPage = ({
                         if (checkForMultiplePaymentApps(metadata))
                           throw new Error(t("event_setup_multiple_payment_apps_error"));
                         if (
-                          value.metadata?.apps?.stripe?.paymentOption === "HOLD" &&
+                          (value.metadata?.apps as Record<string, any>)?.stripe?.paymentOption === "HOLD" &&
                           value.seatsPerTimeSlot
                         ) {
                           throw new Error(t("seats_and_no_show_fee_error"));

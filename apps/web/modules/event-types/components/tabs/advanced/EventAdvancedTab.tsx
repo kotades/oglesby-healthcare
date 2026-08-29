@@ -462,8 +462,8 @@ export const EventAdvancedTab = ({
   const seatsEnabled = formMethods.watch("seatsPerTimeSlotEnabled");
   const multiLocation = (formMethods.getValues("locations") || []).length > 1;
   const noShowFeeEnabled =
-    formMethods.getValues("metadata")?.apps?.stripe?.enabled === true &&
-    formMethods.getValues("metadata")?.apps?.stripe?.paymentOption === "HOLD";
+    (formMethods.getValues("metadata")?.apps as Record<string, any>)?.stripe?.enabled === true &&
+    (formMethods.getValues("metadata")?.apps as Record<string, any>)?.stripe?.paymentOption === "HOLD";
 
   const isRecurringEvent = !!formMethods.getValues("recurringEvent");
   const interfaceLanguageOptions =
