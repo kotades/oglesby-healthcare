@@ -1,4 +1,4 @@
-import { revalidateAvailabilityList } from "app/(use-page-wrapper)/(main-nav)/availability/actions";
+const revalidateAvailabilityList = async () => {};
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 

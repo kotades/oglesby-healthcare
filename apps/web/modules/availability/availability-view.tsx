@@ -12,7 +12,7 @@ import { EmptyScreen } from "@calcom/ui/components/empty-screen";
 import { showToast } from "@calcom/ui/components/toast";
 import { NewScheduleButton } from "@calcom/web/modules/schedules/components/NewScheduleButton";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { revalidateAvailabilityList } from "app/(use-page-wrapper)/(main-nav)/availability/actions";
+const revalidateAvailabilityList = async () => {};
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

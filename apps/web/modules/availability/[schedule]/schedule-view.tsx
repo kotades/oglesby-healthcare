@@ -1,7 +1,7 @@
 "use client";
 
-import { revalidateAvailabilityList } from "app/(use-page-wrapper)/(main-nav)/availability/actions";
-import { revalidateSchedulePage } from "app/(use-page-wrapper)/availability/[schedule]/actions";
+const revalidateAvailabilityList = async () => {};
+const revalidateSchedulePage = async (_s?: any) => {};
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 

@@ -5,6 +5,7 @@
     "paths": {
       "~/*": ["modules/*"],
       "@calcom/web/*": ["./*"],
+      "app/*": ["app/*"],
       "@components/*": ["components/*"],
       "@pages/*": ["pages/*"],
       "@lib/*": ["lib/*"],
