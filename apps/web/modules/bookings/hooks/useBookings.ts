@@ -1,6 +1,6 @@
 "use client";
 
-const createPaymentLink = (opts: { paymentUid: string; date?: string; name?: string; email?: string; absolute?: boolean }) => {
+const createPaymentLink = (opts: { paymentUid: string; date?: string | null; name?: string | null; email?: string | null; absolute?: boolean }) => {
   const params = new URLSearchParams();
   if (opts.date) params.set("date", opts.date);
   if (opts.name) params.set("name", opts.name);
