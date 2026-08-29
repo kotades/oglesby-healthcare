@@ -1,6 +1,13 @@
 "use client";
 
-import { createPaymentLink } from "@calcom/app-store/stripepayment/lib/client";
+const createPaymentLink = (opts: { paymentUid: string; date?: string; name?: string; email?: string; absolute?: boolean }) => {
+  const params = new URLSearchParams();
+  if (opts.date) params.set("date", opts.date);
+  if (opts.name) params.set("name", opts.name);
+  if (opts.email) params.set("email", opts.email);
+  const query = params.toString();
+  return `/payment/${opts.paymentUid}${query ? `?${query}` : ""}`;
+};
 import { useHandleBookEvent } from "@calcom/atoms/hooks/bookings/useHandleBookEvent";
 import dayjs from "@calcom/dayjs";
 import { sdkActionManager } from "@calcom/embed-core/embed-iframe";
